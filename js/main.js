@@ -44,14 +44,5 @@ function refreshDisplay() {
 
 function formatWindDirection() {
     let winddirection = localStorage.getItem('winddirection')
-    console.log(winddirection)
-    
-    switch (winddirection) {
-        case ( winddirection > 0):
-            winddirection = 'NE';
-            return winddirection;
-        case (winddirection < 0):
-            winddirection = 'SE';
-            break
-    } 
+    return winddirection
 }
