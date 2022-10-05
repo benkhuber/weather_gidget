@@ -1,6 +1,3 @@
-getFetch()
-refreshDisplay()
-
 class Forecast {
     constructor(date, temperature, windspeed, winddirection) {
         this.date = date
@@ -10,18 +7,50 @@ class Forecast {
     }
 }
 
+class City {
+    constructor(name, latitude, longitude) {
+        this.name = name
+        this.latitude = latitude
+        this.longitude = longitude
+    }
+}
+
 let currentForecast = new Forecast()
+let cities = []
+cities.push(losAngeles = new City('Los Angeles', 34.05, -118.24))
+cities.push(berlin = new City('Berlin', 52.5235, 13.4115))
 
 let button = document.querySelector('#refreshButton')
 button.addEventListener('click', getFetch)
 button.addEventListener('click', refreshDisplay)
 
+let chosenCity = {
+    longitude: '',
+    latitude: '',
+}
+
+refreshDisplay()
+
 function getCity() {
-    
+    let cityInputValue = document.querySelector('#citySelect').value
+    for (let i = 0; i < cities.length; i++) {
+        if (cityInputValue == cities[i].name) {
+            chosenCity.longitude = cities[i].longitude
+            chosenCity.latitude = cities[i].latitude
+        }
+    }
+}
+
+function getLongitude() {
+    return chosenCity.longitude
+}
+
+function getLatitude() {
+    return chosenCity.latitude
 }
 
 function getFetch() {
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=34.05&longitude=-118.24&hourly=temperature_2m,windspeed_10m,winddirection_10m,shortwave_radiation_instant&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,rain_sum,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=kn&precipitation_unit=inch&timezone=America%2FLos_Angeles')
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${getLatitude()}&longitude=${getLongitude()}&hourly=temperature_2m,windspeed_10m,winddirection_10m,shortwave_radiation_instant&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,rain_sum,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=kn&precipitation_unit=inch&timezone=America%2FLos_Angeles`)
         .then(response => response.json())
         .then(response => {
             let current = response.current_weather
@@ -39,6 +68,8 @@ function getFetch() {
 }
 
 function refreshDisplay() {
+    getCity()
+    getFetch()
     document.querySelector('#dateContainer').innerText = localStorage.getItem('date')
     document.querySelector('#temperatureContainer').innerHTML = localStorage.getItem('temperature') + ' F'
     document.querySelector('#windspeedContainer').innerHTML = formatWindSpeed()
@@ -61,7 +92,6 @@ function formatWindSpeed() {
 
 function formatWindDirection() {
     let winddirection = localStorage.getItem('winddirection')
-    console.log(winddirection)
     if (winddirection >= 345 || winddirection <= 15) {
         return 'N'
     } else if (15 < winddirection && winddirection < 35){
