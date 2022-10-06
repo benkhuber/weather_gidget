@@ -19,6 +19,13 @@ let currentForecast = new Forecast()
 let cities = []
 cities.push(losAngeles = new City('Los Angeles', 34.05, -118.24))
 cities.push(berlin = new City('Berlin', 52.5235, 13.4115))
+cities.push(orange = new City('Orange', 33.7879, -117.8531))
+
+for (let i = 0; i < cities.length; i++) {
+    let cityOption = document.createElement('option')
+    cityOption.innerText = cities[i].name
+    document.getElementById('citySelect').appendChild(cityOption)
+}
 
 let button = document.querySelector('#refreshButton')
 button.addEventListener('click', refreshDisplay)
@@ -31,6 +38,8 @@ let chosenCity = {
 
 getFetch()
 refreshDisplay()
+showTime()
+showDate()
 
 function cityChoice() {
     getFetch()
@@ -62,35 +71,36 @@ function getFetch() {
         .then(response => response.json())
         .then(response => {
             let current = response.current_weather
-            currentForecast.date = current.time, 
+            // currentForecast.date = current.time, 
             currentForecast.temperature = current.temperature, 
             currentForecast.windspeed = current.windspeed, 
             currentForecast.winddirection = current.winddirection
 
             localStorage.setItem('city', chosenCity.name)
-            localStorage.setItem('date', currentForecast.date)
+            // localStorage.setItem('date', currentForecast.date)
             localStorage.setItem('temperature', currentForecast.temperature)
             localStorage.setItem('windspeed', currentForecast.windspeed)
             localStorage.setItem('winddirection', currentForecast.winddirection)
 
-            console.log(localStorage.getItem('temperature'))
         })
         .catch(err => console.error(err));
 }
 
 function refreshDisplay() {
-    console.log(localStorage.getItem('city'))
     document.querySelector('#nameContainer').innerText = localStorage.getItem('city')
-    document.querySelector('#dateContainer').innerText = localStorage.getItem('date')
+    // document.querySelector('#dateContainer').innerText = localStorage.getItem('date')
+    showDate()
     document.querySelector('#temperatureContainer').innerHTML = localStorage.getItem('temperature') + ' F'
     document.querySelector('#windspeedContainer').innerHTML = formatWindSpeed()
     document.querySelector('#winddirectionContainer').innerText = formatWindDirection()
+    console.log(formatWindSpeed())
 }
 
 
 function formatWindSpeed() {
     let windspeed = localStorage.getItem('windspeed')
-    if (windspeed < 2.5) {
+    console.log(windspeed)
+    if (windspeed <= 2.5) {
         return `CALM (${windspeed} knots)`
     } else if (windspeed > 2.5 && windspeed < 10) {
         return `LIGHT BREEZE (${windspeed} knots)`
@@ -136,4 +146,41 @@ function formatWindDirection() {
     } else if (325 < winddirection && winddirection < 345){
         return 'N/NW'
     } 
+}
+
+function showTime() { 
+    let date = new Date()
+    let hours = date.getHours()
+    let minutes = date.getMinutes()
+    let seconds = date.getSeconds()
+    let session = 'AM'
+
+    if (hours == 0) {
+        hours = 12
+    }
+
+    if (hours > 12) {
+        hours = hours - 12
+        session = 'PM'
+    }
+
+    hours = (hours < 10) ? '0' + hours : hours
+    minutes = (minutes < 10) ? '0' + minutes : minutes
+    seconds  = (seconds  < 10) ? '0' + seconds : seconds 
+
+    let time = hours + ':' + minutes + ':' + seconds + ' ' + session
+    document.getElementById('timeContainer').innerText = time
+    document.getElementById('timeContainer').textContent = time
+
+    setTimeout(showTime, 1000)
+}
+
+function showDate () {
+    let date = new Date()
+    let day = date.getUTCDay() + 1
+    let month = date.getUTCMonth() + 1
+    let year = date.getUTCFullYear()
+
+    let today = month + '/' + day + '/' + year
+    document.getElementById('dateContainer').innerText = today
 }

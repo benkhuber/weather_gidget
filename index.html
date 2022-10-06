@@ -16,33 +16,37 @@
 
 		<header>
 			Weather
-			<select id="citySelect" onchange="cityChoice()">
-				<option id="cityLosAngeles">Los Angeles</option>
-				<option>Berlin</option>
-			</select>
 		</header>
+
+		<select id="citySelect" onchange="cityChoice()">
+		
+		</select>
 		
 		<button id="refreshButton">Refresh Display</button>
 
 		<section id='dashboard'>
 			
-			<div id='nameContainer'>
+			<div id='nameContainer' class='box'>
+
+			</div>
+
+			<div id='timeContainer' onload="showTime()" class='box'>
+
+			</div>
+
+			<div id='dateContainer' class='box'>
+
+			</div>
+
+			<div id='temperatureContainer' class='box'>
+
+			</div>
+
+			<div id='windspeedContainer' class='box'>
 				
 			</div>
 
-			<div id='dateContainer'>
-
-			</div>
-
-			<div id='temperatureContainer'>
-
-			</div>
-
-			<div id='windspeedContainer'>
-				
-			</div>
-
-			<div id='winddirectionContainer'>
+			<div id='winddirectionContainer' class='box'>
 
 			</div>
 
