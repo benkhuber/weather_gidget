@@ -16,7 +16,7 @@
 
 		<header>
 			Weather
-			<select id="citySelect">
+			<select id="citySelect" onchange="cityChoice()">
 				<option id="cityLosAngeles">Los Angeles</option>
 				<option>Berlin</option>
 			</select>
@@ -26,8 +26,12 @@
 
 		<section id='dashboard'>
 			
+			<div id='nameContainer'>
+				
+			</div>
+
 			<div id='dateContainer'>
-aa
+
 			</div>
 
 			<div id='temperatureContainer'>

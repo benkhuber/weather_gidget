@@ -21,20 +21,26 @@ cities.push(losAngeles = new City('Los Angeles', 34.05, -118.24))
 cities.push(berlin = new City('Berlin', 52.5235, 13.4115))
 
 let button = document.querySelector('#refreshButton')
-button.addEventListener('click', getFetch)
 button.addEventListener('click', refreshDisplay)
 
 let chosenCity = {
+    name: '',
     longitude: '',
     latitude: '',
 }
 
+getFetch()
 refreshDisplay()
+
+function cityChoice() {
+    getFetch()
+}
 
 function getCity() {
     let cityInputValue = document.querySelector('#citySelect').value
     for (let i = 0; i < cities.length; i++) {
         if (cityInputValue == cities[i].name) {
+            chosenCity.name = cities[i].name
             chosenCity.longitude = cities[i].longitude
             chosenCity.latitude = cities[i].latitude
         }
@@ -50,6 +56,8 @@ function getLatitude() {
 }
 
 function getFetch() {
+    getCity()
+
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${getLatitude()}&longitude=${getLongitude()}&hourly=temperature_2m,windspeed_10m,winddirection_10m,shortwave_radiation_instant&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,rain_sum,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=kn&precipitation_unit=inch&timezone=America%2FLos_Angeles`)
         .then(response => response.json())
         .then(response => {
@@ -59,17 +67,20 @@ function getFetch() {
             currentForecast.windspeed = current.windspeed, 
             currentForecast.winddirection = current.winddirection
 
+            localStorage.setItem('city', chosenCity.name)
             localStorage.setItem('date', currentForecast.date)
             localStorage.setItem('temperature', currentForecast.temperature)
             localStorage.setItem('windspeed', currentForecast.windspeed)
             localStorage.setItem('winddirection', currentForecast.winddirection)
+
+            console.log(localStorage.getItem('temperature'))
         })
         .catch(err => console.error(err));
 }
 
 function refreshDisplay() {
-    getCity()
-    getFetch()
+    console.log(localStorage.getItem('city'))
+    document.querySelector('#nameContainer').innerText = localStorage.getItem('city')
     document.querySelector('#dateContainer').innerText = localStorage.getItem('date')
     document.querySelector('#temperatureContainer').innerHTML = localStorage.getItem('temperature') + ' F'
     document.querySelector('#windspeedContainer').innerHTML = formatWindSpeed()
