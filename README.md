@@ -1,2 +1,3 @@
-# recipes
-Recipe search page
+# weather_gidget
+
+weather gidget with API
